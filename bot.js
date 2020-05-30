@@ -1,6 +1,10 @@
-const config = require('./config');
+// const config = require('./config');
+const config = process.env;
+
 const twit = require('twit');
+
 const T = new twit(config);
+
 const lines = require('./lines');
 
 const interval = 1000 * 60; // One minute.
