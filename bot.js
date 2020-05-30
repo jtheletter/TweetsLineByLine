@@ -4,19 +4,19 @@ const config = process.env; // For Heroku.
 const twit = require('twit');
 const T = new twit(config);
 const lines = require('./lines');
-let index = 0;
+let index = 1;
 
 // const interval = 1000 * 60; // One minute, for testing.
 const interval = 1000 * 60 * 77; // 77 minutes.
 
-// Tweet upon app launch.
+// Tweet first line upon app launch.
 T.post('statuses/update', {
-    status: 'From the First Saga, Journal of the Whills'
+    status: lines[0]
 }, function (err, data, response) {
-  console.log(data);
+    console.log(data);
 });
 
-// Tweet dialog lines at intervals.
+// Tweet remaining lines at intervals.
 setInterval(tweet, interval);
 
 function tweet () {
@@ -24,7 +24,7 @@ function tweet () {
     T.post('statuses/update', {
         status: lines[index]
     }, function (err, data, response) {
-      console.log(data);
+        console.log(data);
     });
 
     index += 1;
