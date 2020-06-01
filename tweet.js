@@ -4,12 +4,11 @@ const twit = require('twit');
 const twitClient = new twit(config);
 
 function post (text) {
-    console.log('would post:', text);
-    // twitClient.post('statuses/update', {
-    //     status: text
-    // }, function (error, data, response) {
-    //     console.log(data);
-    // });
+    twitClient.post('statuses/update', {
+        status: text
+    }, function (error, data, response) {
+        console.log(data);
+    });
 }
 
 // Default interval 77 minutes.
