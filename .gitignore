@@ -1,4 +1,5 @@
+*.pem
 .DS_Store
 __*
-config.js
+config/dev.js
 node_modules

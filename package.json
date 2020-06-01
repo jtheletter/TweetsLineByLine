@@ -1,13 +1,13 @@
 {
   "name": "starwarsdialog",
-  "version": "1.0.0",
-  "description": "",
-  "main": "bot.js",
+  "version": "1.1.0",
+  "description": "A bot to tweet Star Wars dialog.",
+  "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "JP",
   "license": "ISC",
   "dependencies": {
     "twit": "^2.2.11"
