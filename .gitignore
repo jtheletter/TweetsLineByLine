@@ -1,5 +1,6 @@
+**/.DS_Store
 *.pem
-.DS_Store
+*.zip
 __*
 config/dev.js
 node_modules

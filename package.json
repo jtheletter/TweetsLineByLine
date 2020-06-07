@@ -1,15 +1,20 @@
 {
-  "name": "starwarsdialog",
-  "version": "1.1.0",
-  "description": "A bot to tweet Star Wars dialog.",
-  "main": "main.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "JP",
-  "license": "ISC",
-  "dependencies": {
-    "twit": "^2.2.11"
-  }
+    "name": "starwarsdialog",
+    "version": "1.2.0",
+    "description": "A bot to tweet Star Wars dialog.",
+    "main": "main.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "JP",
+    "license": "ISC",
+    "dependencies": {
+        "twit": "^2.2.11"
+    },
+    "devDependencies": {},
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/jtheletter/starwarsdialog.git"
+    }
 }
