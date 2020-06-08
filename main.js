@@ -2,34 +2,85 @@ const lines = require('./lines');
 const config = require('./config');
 const Twit = require('twit');
 const twitClient = new Twit(config);
-let index = 0;
 
-function twitCallback (error, data, response) {
-    if (error) {
-        console.error(error);
-    } else {
-        console.log(data);
-    }
+async function getParam (param = {}) {
+    const ssm = new (require('aws-sdk/clients/ssm'))();
+    const awsParam = {
+        Name: `/starwarsdialog/${param.name}`,
+    };
+    const result = await ssm.getParameter(awsParam).promise();
+    return result;
 }
 
-function tweetLineAtIndex (input) {
-    try {
-        if (typeof input === 'object' && typeof input.index === 'number') {
-            // console.log('Received new index:', input.index);
-            index = input.index;
-        } else {
-            // console.log('Received no new index.');
-        }
+async function setParam (param = {}) {
+    const ssm = new (require('aws-sdk/clients/ssm'))();
+    const awsParam = {
+          Name: `/starwarsdialog/${param.name}`,
+          Overwrite: true,
+          Type: 'String',
+          Value: param.value,
+    };
+    const result = await ssm.putParameter(awsParam).promise();
+    return result;
+}
+
+function advanceAndSaveIndex (index) {
+    // Advance index.
+    index += 1;
+    console.log(`Index advanced to ${index}. Saving to storage.`);
+
+    // Save index to AWS Parameter Store.
+    setParam({
+        name: 'index',
+        value: `${index}`,
+    }).then(function (success) {
+        console.log('Save to storage success:', success);
+    }).catch(function (error) {
+        console.error('Save to storage error:', error);
+    });
+}
+
+function handler () {
+    // Get index from AWS Parameter Store.
+    console.log('Getting index from storage.');
+    getParam({
+        name: 'index',
+    }).then(function (success) {
+        console.log('Get from storage success:', success);
+
+        // Save index to local scope.
+        let index = parseInt(success.Parameter.Value, 10);
+        console.log(`Index from storage is ${index}.`);
+
+        // Reset local index to zero if over lines length.
         if (index >= lines.length) {
-            // console.log('Index exceeds lines length. Resetting to zero.');
+            console.log('Index exceeds length of lines. Resetting to zero.');
             index = 0;
         }
-        // console.log('Would tweet:', index, lines[index]);
-        twitClient.post('statuses/update', { status: lines[index] }, twitCallback);
-        index += 1;
-    } catch (error) {
-        console.error(error);
-    }
+
+        // Tweet line at index.
+        console.log('Posting to Twitter:', lines[index]);
+        twitClient.post('statuses/update', {
+            status: lines[index],
+        }, function (error, success) {
+            if (error) {
+                console.error('Post to Twitter error:', error);
+
+                // If tweet fails due to "status is duplicate", advance and save index.
+                if (error.code === 187) {
+                    advanceAndSaveIndex(index);
+                }
+
+            // Else, tweet succeeded, advance and save index.
+            } else {
+                console.log('Post to Twitter success:', success);
+                advanceAndSaveIndex(index);
+            }
+        });
+
+    }).catch(function (error) {
+        console.error('Get from storage error:', error);
+    });
 }
 
-exports.handler = tweetLineAtIndex;
+exports.handler = handler;
