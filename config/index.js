@@ -1,7 +1,5 @@
-if (process.env.NODE_ENV === 'production') {
-    // console.log('Production environment detected.');
+if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'staging') {
     module.exports = require('./prod');
 } else {
-    // console.log('Development environment assumed.');
     module.exports = require('./dev');
 }
