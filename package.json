@@ -1,6 +1,6 @@
 {
     "name": "starwarsdialog",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "description": "A bot to tweet Star Wars dialog.",
     "main": "main.js",
     "scripts": {
