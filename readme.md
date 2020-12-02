@@ -1,6 +1,6 @@
 # Star Wars Dialog
 
-A bot to tweet opening crawls and spoken lines from George Lucas’ saga (as originally released) in episodic order.
+A bot to tweet opening crawls and spoken lines from George Lucas’s saga, as originally released, in episodic order.
 
 One exception to original release format is to include the addition of “Episode IV – A NEW HOPE” to the opening crawl of the original 1977 movie. Otherwise, these lines do not follow the late-1990s Special Editions nor subsequent edits. Lines are sourced from the movies’ subtitles, with the addition of some non-subtitled words sourced from [Wookieepedia G-Canon](//starwars.fandom.com/wiki/Star_Wars_Legends#Official_levels_of_canon), [Wermo’s Guide](//www.completewermosguide.com/), and by ear.
 
@@ -18,6 +18,6 @@ Instructions:
 - Create AWS account and dedicated [IAM](//aws.amazon.com/iam/) [role](//aws.amazon.com/iam/features/manage-roles/) with [permissions](//aws.amazon.com/iam/features/manage-permissions/) for Lambda and SSM full access.
 - Create staging and production index values in SSM Parameter Store.
 - Create staging and production Lambda functions, with handler set to `main.handler`, Twitter config and `NODE_ENV` saved as environmental variables, and timeout set to 6 seconds (each execution gets index from AWS, then posts text to Twitter, then saves new index to AWS; together this averages 3 seconds in [CloudWatch](//aws.amazon.com/cloudwatch/)).
-- Zip and deploy using NPM scripts: `npm run zip`, `npm run deploy-staging`, and `npm run deploy-production`.
+- Zip and deploy using NPM scripts: `npm run zip`, `npm run deploy-staging`, and `npm run deploy`.
 - Create scheduled (fixed rate) [rule](//docs.aws.amazon.com/AmazonCloudWatch/latest/events/Create-CloudWatch-Events-Scheduled-Rule.html) with empty/default event, and enable rule.
 - View [logs](//docs.aws.amazon.com/AmazonCloudWatch/latest/logs/WhatIsCloudWatchLogs.html).
