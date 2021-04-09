@@ -62,7 +62,7 @@ function handler () {
 
         // Reset local index to zero if over lines length.
         if (index >= lines.length) {
-            console.log('Index exceeds length of lines. Resetting to zero.');
+            console.log('Index exceeds lines. Resetting to 0.');
             index = 0;
         }
 
