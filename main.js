@@ -1,5 +1,5 @@
 const lines = require('./lines');
-const paramStore = process.env.NODE_ENV === 'production' ? '/starwarsdialog' : '/starwarsdialog/staging';
+const paramStore = '/starwarsdialog';
 const config = require('./config');
 const Twit = require('twit');
 const twitClient = new Twit(config);
