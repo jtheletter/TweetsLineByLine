@@ -11,6 +11,7 @@
     "author": "JP",
     "license": "ISC",
     "dependencies": {
+        "aws-sdk": "^2.937.0",
         "twit": "^2.2.11"
     },
     "devDependencies": {},
