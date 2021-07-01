@@ -1,22 +1,33 @@
-const lines = require('./lines');
-const paramStore = '/starwarsdialog';
-const config = require('./config');
-const Twit = require('twit');
-const twitClient = new Twit(config);
+/* jshint esversion: 8 */
 
+const paramStore = 'starwarsdialog';
+const region = 'us-east-1';
+const lines = require('./lines');
+const twitterConfig = require('./twitterConfig');
+const Twit = require('twit');
+const twitClient = new Twit(twitterConfig);
+const AWS = require('aws-sdk');
+AWS.config.update({ region: region });
+
+// Get named parameter from storage.
 async function getParam (param = {}) {
-    const ssm = new (require('aws-sdk/clients/ssm'))();
-    const awsParam = {
-        Name: `${paramStore}/${param.name}`,
-    };
-    const result = await ssm.getParameter(awsParam).promise();
-    return result;
+    try {
+        const ssm = new (require('aws-sdk/clients/ssm'))();
+        const awsParam = {
+            Name: `/${paramStore}/${param.name}`,
+        };
+        const result = await ssm.getParameter(awsParam).promise();
+        return result;
+    } catch (error) {
+        throw error;
+    }
 }
 
+// Set named parameter in storage.
 async function setParam (param = {}) {
     const ssm = new (require('aws-sdk/clients/ssm'))();
     const awsParam = {
-          Name: `${paramStore}/${param.name}`,
+          Name: `/${paramStore}/${param.name}`,
           Overwrite: true,
           Type: 'String',
           Value: param.value,
@@ -25,96 +36,91 @@ async function setParam (param = {}) {
     return result;
 }
 
-function advanceAndSaveIndex (index) {
-    // Advance index.
+// Increment provided index. Reset to zero if needed. Save to storage.
+function incrementAndSaveIndex (index) {
     index += 1;
-    console.log(`Index advanced to ${index}. Saving to storage.`);
-
-    // Save index to AWS Parameter Store.
+    if (index >= lines.length) {
+        index = 0;
+    }
+    console.log(`Index incremented to ${index}. Saving to storage.`);
     setParam({
         name: 'index',
         value: `${index}`,
     }).then(function (success) {
         console.log('Save to storage success:', success);
     }).catch(function (error) {
-        console.error('Save to storage error:', error);
+        console.error('Save to storage failure:', error);
     });
 }
 
-function handler () {
+// Confirm Twitter config is valid.
+function confirmTwitterConfig () {
+    console.log('Confirming Twitter config.');
+    twitClient.get('account/verify_credentials', {
+        skip_status: true,
 
+    // On success, increment and save index, and program ends.
+    }).then(function (success) {
+        console.log('Twitter config is valid:', success.data);
+
+    // On error, send it to console, and program ends.
+    }).catch(function (error) {
+        console.error('Twitter config is invalid:', error.stack);
+    });
+}
+
+// Get index from storage.
+// Either confirm Twitter config or post indexed line to Twitter.
+function handler () {
     // Get index from AWS Parameter Store.
     console.log('Getting index from storage.');
     getParam({
         name: 'index',
 
-    // On error, send it to console, and program ends.
-    }).catch(function (error) {
-        console.error('Get from storage error:', error);
-
     // On success, proceed.
     }).then(function (success) {
         console.log('Get from storage success:', success);
 
-        // Save index to local scope.
+        // Save stored index to local scope.
         let index = parseInt(success.Parameter.Value, 10);
-        console.log(`Index from storage is ${index}.`);
+        console.log('Index from storage is:', index);
+        let line = lines[index];
+        console.log('Line to tweet is:', line);
 
-        // Reset local index to zero if over lines length.
-        if (index >= lines.length) {
-            console.log('Index exceeds lines. Resetting to 0.');
-            index = 0;
-        }
-
-        // If not in production...
+        // If not in production, confirm Twitter config is valid.
         if (process.env.NODE_ENV !== 'production') {
+            confirmTwitterConfig();
 
-            // Log line that would be tweeted in production.
-            console.log('Would post to Twitter:', lines[index]);
-
-            // Ping Twitter.
-            console.log('Pinging Twitter.');
-            twitClient.get('account/verify_credentials', {
-                skip_status: true,
-
-            // On error, send it to console, and program ends.
-            }).catch(function (error) {
-                console.error('Ping Twitter error:', error.stack);
-
-            // On success, advance and save index.
-            }).then(function (success) {
-                console.log('Ping Twitter success:', success.data);
-                advanceAndSaveIndex(index);
-            });
-
-        // Else in production...
+        // Else tweet.
         } else {
-
-            // Log line before tweet attempt.
-            console.log('Posting to Twitter:', lines[index]);
-
-            // Tweet.
             twitClient.post('statuses/update', {
-                status: lines[index],
+                status: line,
             }, function (error, success) {
 
-                // If error, send it to console, check code for exception.
+                // If tweet fails, print error to the console.
                 if (error) {
-                    console.error('Post to Twitter error:', error);
+                    console.error('Post to Twitter failure:', error);
 
-                    // If tweet fails due to "status is duplicate", advance index.
+                    // If tweet fails as "status is duplicate", increment index.
                     if (error.code === 187) {
-                        advanceAndSaveIndex(index);
+                        incrementAndSaveIndex(index);
                     }
 
-                // Else, tweet succeeded, advance index.
+                // Else tweet succeeded, increment index.
                 } else {
                     console.log('Post to Twitter success:', success);
-                    advanceAndSaveIndex(index);
+                    incrementAndSaveIndex(index);
                 }
             });
         }
+
+    // On failure, print error to console.
+    }).catch(function (error) {
+        console.error('Get from storage failure:', error);
     });
 }
 
 exports.handler = handler;
+
+// Uncomment for command-line tests.
+// handler();

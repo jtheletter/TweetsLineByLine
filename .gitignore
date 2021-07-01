@@ -2,5 +2,5 @@
 *.pem
 *.zip
 __*
-config/dev.js
+twitterConfig/dev.js
 node_modules
