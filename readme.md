@@ -1,4 +1,4 @@
-# Star Wars Dialog
+# Twitter Dialog Bot
 
 Twitter bot that posts written works line by line in order.
 
