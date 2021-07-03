@@ -1,7 +1,7 @@
 {
     "name": "starwarsdialog",
-    "version": "2.0.0",
-    "description": "A bot to tweet Star Wars dialog.",
+    "version": "2.0.1",
+    "description": "Twitter bot that posts written works line by line in order.",
     "main": "main.js",
     "scripts": {
         "zip": "zip -r starwarsdialog.zip . -x \"**/.DS_Store\" -x \"*.jpg\" -x \"*.md\" -x \"*.pem\" -x \"*.zip\" -x \".DS_Store\" -x \".git*\" -x \".gitignore\" -x \"__*\" -x \"config/dev.js\"",
@@ -11,6 +11,7 @@
     "author": "JP",
     "license": "ISC",
     "dependencies": {
+        "aws": "^0.0.3-2",
         "aws-sdk": "^2.937.0",
         "twit": "^2.2.11"
     },
