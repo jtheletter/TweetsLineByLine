@@ -1,20 +1,9 @@
-/* jshint esversion: 8 */
-
-const paramStore = 'starwarsdialog';
-const region = 'us-east-1';
-const lines = require('./lines');
-const twitterConfig = require('./twitterConfig');
-const Twit = require('twit');
-const twitClient = new Twit(twitterConfig);
-const AWS = require('aws-sdk');
-AWS.config.update({ region: region });
-
 // Get named parameter from storage.
 async function getParam (param = {}) {
     try {
         const ssm = new (require('aws-sdk/clients/ssm'))();
         const awsParam = {
-            Name: `/${paramStore}/${param.name}`,
+            Name: `/${work}/${param.name}`,
         };
         const result = await ssm.getParameter(awsParam).promise();
         return result;
@@ -27,7 +16,7 @@ async function getParam (param = {}) {
 async function setParam (param = {}) {
     const ssm = new (require('aws-sdk/clients/ssm'))();
     const awsParam = {
-          Name: `/${paramStore}/${param.name}`,
+          Name: `/${work}/${param.name}`,
           Overwrite: true,
           Type: 'String',
           Value: param.value,
@@ -72,6 +61,7 @@ function confirmTwitterConfig () {
 // Get index from storage.
 // Either confirm Twitter config or post indexed line to Twitter.
 function handler () {
+
     // Get index from AWS Parameter Store.
     console.log('Getting index from storage.');
     getParam({
@@ -120,7 +110,29 @@ function handler () {
     });
 }
 
+// Get work name from environment (production/AWS) or argument (dev/CLI).
+const work = process.env.WORK || process.argv[2];
+if (
+    work !== 'bttf' &&
+    work !== 'hobbit' &&
+    work !== 'starwars' &&
+    work !== 'willows'
+    ) {
+    throw new Error(`Unrecognized work: ${work}`);
+}
+const lines = require(`./lines/${work}`);
+
+// Configure AWS.
+const awsRegion = 'us-east-1';
+const Aws = require('aws-sdk');
+Aws.config.update({ region: awsRegion });
+
+// Configure Twit.
+const Twit = require('twit');
+const twitterConfig = require(`./config/twitter/${work}`);
+const twitClient = new Twit(twitterConfig);
+
 exports.handler = handler;
 
-// Uncomment for command-line tests.
-// handler();
+// Uncomment for CLI. Invoke with work name as argument.
+handler(process.argv[2]);
