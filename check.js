@@ -1,5 +1,3 @@
-const lines = require('./lines');
-
 // Prevent Twitter rejecting lines as too long or as duplicate tweets.
 function checkForTwitter (lines = [], charLimit = 280, dupeLimit = 6) {
 
@@ -26,5 +24,16 @@ function checkForTwitter (lines = [], charLimit = 280, dupeLimit = 6) {
     console.log('Longs:', longs);
     console.log('Dupes:', dupes);
 }
+
+const work = process.env.WORK || process.argv[2];
+if (
+    work !== 'bttf' &&
+    work !== 'hobbit' &&
+    work !== 'starwars' &&
+    work !== 'willows'
+    ) {
+    throw new Error(`Unrecognized work: ${work}`);
+}
+const lines = require(`./lines/${work}`);
 
 checkForTwitter(lines);
