@@ -123,15 +123,16 @@ if (
 const lines = require(`./lines/${work}`);
 
 // Configure AWS.
-const awsRegion = 'us-east-1';
 const Aws = require('aws-sdk');
-Aws.config.update({ region: awsRegion });
+const awsConfig = require(`./config/aws/${work}`);
+Aws.config.update({ region: awsConfig.region });
 
 // Configure Twit.
 const Twit = require('twit');
 const twitterConfig = require(`./config/twitter/${work}`);
 const twitClient = new Twit(twitterConfig);
 
+// Export handler for invocation.
 exports.handler = handler;
 
 // Uncomment for CLI. Invoke with work name as argument.
