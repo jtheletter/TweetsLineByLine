@@ -1,18 +1,17 @@
 {
     "name": "twitterdialogbot",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "description": "Twitter bot that posts written works line by line in order.",
-    "main": "main.js",
+    "main": "index.js",
     "scripts": {
-        "zip": "zip -r twitterdialogbot.zip . -x \"**/.DS_Store\" -x \"*.jpg\" -x \"*.md\" -x \"*.pem\" -x \"*.zip\" -x \".DS_Store\" -x \".git*\" -x \".gitignore\" -x \"__*\" -x \"config/dev.js\"",
-        "deploy": "aws lambda update-function-code --function-name twitterdialogbot --zip-file fileb://twitterdialogbot.zip"
+        "test": "echo $1",
+        "zip": "zip -r twitterdialogbot.zip . -x \"**/*.gif\" -x \"**/*.jp*\" -x \"**/*.mov\" -x \"**/*.mp*\" -x \"**/*.png\" -x \"**/.DS_Store\" -x \"**/__*\" -x \"*.git*\" -x \"*.md\" -x \"*.zip\" -x \".DS_Store\" -x \"__*\" -x \"check.js\" -x \"config/**/dev.js\" -x \"images*\"",
+        "deploy": "aws lambda update-function-code --zip-file fileb://twitterdialogbot.zip --function-name"
     },
     "keywords": [],
     "author": "JP",
     "license": "ISC",
     "dependencies": {
-        "aws": "^0.0.3-2",
-        "aws-sdk": "^2.937.0",
         "twit": "^2.2.11"
     },
     "devDependencies": {},
