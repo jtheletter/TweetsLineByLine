@@ -1,6 +1,5 @@
 **/.DS_Store
-*.pem
 *.zip
 __*
-config/twitter/*/dev.js
+config/**/dev.js
 node_modules
