@@ -59,7 +59,7 @@ function confirmTwitterConfig () {
 }
 
 // Get index from storage.
-// Either confirm Twitter config or post indexed line to Twitter.
+// Either confirm Twitter config (in dev/CLI) or post indexed line to Twitter (in prod/AWS).
 function handler () {
 
     // Get index from AWS Parameter Store.
@@ -110,7 +110,7 @@ function handler () {
     });
 }
 
-// Get work name from environment (production/AWS) or argument (dev/CLI).
+// Get work name from environment (prod/AWS) or argument (dev/CLI).
 const work = process.env.WORK || process.argv[2];
 if (
     work !== 'bttf' &&
