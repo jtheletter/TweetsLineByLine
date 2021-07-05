@@ -1,8 +1,6 @@
 async function getIndex () {
     console.log('Getting index from storage.');
     try {
-        const { SSMClient, GetParameterCommand } = require('@aws-sdk/client-ssm');
-        const region = require(`./config/aws/${work}`).region;
         const client = new SSMClient({ region });
         const param = {
             Name: `/${work}/index`
@@ -28,8 +26,6 @@ async function setIndex (input) {
         if (isNaN(index) || index < 0) {
             throw new Error(`Invalid index: ${index}`);
         }
-        const { SSMClient, PutParameterCommand } = require('@aws-sdk/client-ssm');
-        const region = require(`./config/aws/${work}`).region;
         const client = new SSMClient({ region });
         const param = {
             Name: `/${work}/index`,
@@ -105,13 +101,9 @@ function devHandler () {
     }
 }
 
+const works = require('./works');
 const work = process.env.WORK || process.argv[2];
-if (
-    work !== 'bttf' &&
-    work !== 'hobbit' &&
-    work !== 'starwars' &&
-    work !== 'willows'
-    ) {
+if (!works.includes(work)) {
     throw new Error(`Invalid work: ${work}`);
 }
 const lines = require(`./lines/${work}`);
@@ -119,6 +111,9 @@ const lines = require(`./lines/${work}`);
 const Twit = require('twit');
 const twitterConfig = require(`./config/twitter/${work}`);
 const twitClient = new Twit(twitterConfig);
+
+const { SSMClient, GetParameterCommand, PutParameterCommand } = require('@aws-sdk/client-ssm');
+const region = require(`./config/aws/${work}`).region;
 
 if (process.env.NODE_ENV !== 'production') {
     devHandler();

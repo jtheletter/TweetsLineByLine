@@ -25,14 +25,10 @@ function checkLines (lines = [], charLimit = 280, dupeLimit = 6) {
     console.log('Dupes:', dupes);
 }
 
+const works = require('./works');
 const work = process.env.WORK || process.argv[2];
-if (
-    work !== 'bttf' &&
-    work !== 'hobbit' &&
-    work !== 'starwars' &&
-    work !== 'willows'
-    ) {
-    throw new Error(`Unrecognized work: ${work}`);
+if (!works.includes(work)) {
+    throw new Error(`Invalid work: ${work}`);
 }
 const lines = require(`./lines/${work}`);
 
