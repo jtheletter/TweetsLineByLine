@@ -1,22 +1,26 @@
 {
     "name": "twitterdialogbot",
-    "version": "2.0.2",
+    "version": "2.1.0",
     "description": "Twitter bot that posts written works line by line in order.",
-    "main": "index.js",
-    "scripts": {
-        "test": "echo $1",
-        "zip": "zip -r twitterdialogbot.zip . -x \"**/*.gif\" -x \"**/*.jp*\" -x \"**/*.mov\" -x \"**/*.mp*\" -x \"**/*.png\" -x \"**/.DS_Store\" -x \"**/__*\" -x \"*.git*\" -x \"*.md\" -x \"*.zip\" -x \".DS_Store\" -x \"__*\" -x \"check.js\" -x \"config/**/dev.js\" -x \"images*\"",
-        "deploy": "aws lambda update-function-code --zip-file fileb://twitterdialogbot.zip --function-name"
-    },
-    "keywords": [],
     "author": "JP",
     "license": "ISC",
-    "dependencies": {
-        "twit": "^2.2.11"
-    },
-    "devDependencies": {},
+    "keywords": [],
     "repository": {
         "type": "git",
         "url": "git://github.com/jtheletter/twitterdialogbot.git"
+    },
+    "main": "index.js",
+    "scripts": {
+        "pre-check": "node preCheck.js ${WORK}",
+        "test": "npm install && node index.js ${WORK}",
+        "zip": "npm install --production && rm twitterdialogbot.zip && zip -r twitterdialogbot.zip . -x \"**/*.gif\" -x \"**/*.jp*\" -x \"**/*.mov\" -x \"**/*.mp*\" -x \"**/*.png\" -x \"**/.DS_Store\" -x \"**/__*\" -x \"*.git*\" -x \"*.md\" -x \"*.zip\" -x \".DS_Store\" -x \"__*\" -x \"check.js\" -x \"config/**/dev.js\" -x \"images*\" && du -h twitterdialogbot.zip",
+        "deploy": "aws lambda update-function-code --zip-file fileb://twitterdialogbot.zip --function-name ${WORK}",
+        "tweet": "npm install && node index.js ${WORK} tweet"
+    },
+    "dependencies": {
+        "twit": "^2.2.11"
+    },
+    "devDependencies": {
+        "@aws-sdk/client-ssm": "^3.20.0"
     }
 }
