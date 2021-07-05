@@ -48,8 +48,11 @@ For each written work:
   - Add the corresponding lambda as its target.
   - Toggle state to enabled when ready to begin.
 - View logs in AWS CloudWatch.
-- Check lines meet Twitter limits via `WORK=<work> npm run pre-check`.
-- Test Twitter and AWS credentials via `WORK=<work> npm run test`.
-- Zip code for deploy via `npm run zip`.
-- Deploy the zip via `WORK=<work> npm run deploy`.
-- Execute handler manually via `WORK=<work> npm run tweet`.
+- Command-line scripts:
+    - Check lines meet Twitter limits via `WORK=<work> npm run check-lines`.
+    - Confirm Twitter credentials via `WORK=<work> npm run confirm-twitter`.
+    - Get index from AWS storage via `WORK=<work> npm run get-index`.
+    - Set index in AWS storage via `WORK=<work> npm run set-index <index>`.
+    - Zip code for deploy via `npm run zip`.
+    - Deploy the zip via `WORK=<work> npm run deploy`.
+    - Execute handler manually via `WORK=<work> npm run execute`.

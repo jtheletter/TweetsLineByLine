@@ -1,5 +1,5 @@
 // Prevent Twitter rejecting lines as too long or as duplicate tweets.
-function preCheckLinesForTwitter (lines = [], charLimit = 280, dupeLimit = 6) {
+function checkLines (lines = [], charLimit = 280, dupeLimit = 6) {
 
     console.log(`Checking for lines longer than ${charLimit} characters, and for duplicate lines within ${dupeLimit} indices of each other.`);
 
@@ -36,4 +36,4 @@ if (
 }
 const lines = require(`./lines/${work}`);
 
-preCheckLinesForTwitter(lines);
+checkLines(lines);
