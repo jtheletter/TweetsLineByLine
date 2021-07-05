@@ -1,58 +1,61 @@
-// Get named parameter from storage.
-async function getAwsParam (input = {}) {
+async function getIndex () {
+    console.log('Getting index from storage.');
     try {
         const { SSMClient, GetParameterCommand } = require('@aws-sdk/client-ssm');
         const region = require(`./config/aws/${work}`).region;
         const client = new SSMClient({ region });
         const param = {
-            Name: `/${work}/${input.name}`
+            Name: `/${work}/index`
         };
         const command = new GetParameterCommand(param);
         const result = await client.send(command);
-        return result;
+        const index = parseInt(result.Parameter.Value, 10);
+        if (isNaN(index) || index < 0 || lines.length <= index) {
+            throw new Error(`Invalid index: ${index}`);
+        }
+        console.log('Get from storage success:', result);
+        return index;
     } catch (error) {
+        console.error('Get from storage failure:', error);
         throw error;
     }
 }
 
-// Set named parameter in storage.
-async function setAwsParam (input = {}) {
+async function setIndex (input) {
+    console.log(`Saving index ${input} to storage.`);
     try {
+        const index = parseInt(input, 10);
+        if (isNaN(index) || index < 0) {
+            throw new Error(`Invalid index: ${index}`);
+        }
         const { SSMClient, PutParameterCommand } = require('@aws-sdk/client-ssm');
         const region = require(`./config/aws/${work}`).region;
         const client = new SSMClient({ region });
         const param = {
-            Name: `/${work}/${input.name}`,
+            Name: `/${work}/index`,
             Overwrite: true,
             Type: 'String',
-            Value: input.value,
+            Value: `${index}`,
         };
         const command = new PutParameterCommand(param);
         const result = await client.send(command);
+        console.log('Save to storage success:', result);
         return result;
     } catch (error) {
+        console.error('Save to storage failure:', error);
         throw error;
     }
 }
 
-// Increment provided index. Reset to zero if needed. Save to storage.
 function incrementAndSaveIndex (index) {
     index += 1;
-    if (index >= lines.length) {
+    if (lines.length <= index) {
         index = 0;
     }
-    console.log(`Index incremented to ${index}. Saving to storage.`);
-    setAwsParam({
-        name: 'index',
-        value: `${index}`,
-    }).then(function (success) {
-        console.log('Save to storage success:', success);
-    }).catch(function (error) {
-        console.error('Save to storage failure:', error);
-    });
+    console.log(`Index incremented to ${index}.`);
+    setIndex(`${index}`).then(function (success) {}).catch(function (error) {});
 }
 
-// Confirm Twitter config is valid.
 function confirmTwitterConfig () {
     twitClient.get('account/verify_credentials', {
         skip_status: true,
@@ -63,47 +66,45 @@ function confirmTwitterConfig () {
     });
 }
 
-// Get index from storage. Post indexed line to Twitter.
 function handler () {
-
-    // Get index from AWS Parameter Store.
-    console.log('Getting index from storage.');
-    getAwsParam({
-        name: 'index',
-    }).then(function (success) {
-        console.log('Get from AWS storage success:', success);
-
-        // Save stored index to local scope.
-        let index = parseInt(success.Parameter.Value, 10);
+    getIndex().then(function (index) {
         let line = lines[index];
         console.log(`Index from storage is ${index}. Line to tweet is:`, line);
-
-        // Tweet.
         twitClient.post('statuses/update', {
             status: line,
         }, function (error, success) {
-
-            // If tweet fails, print error to the console.
             if (error) {
                 console.error('Post to Twitter failure:', error);
-
-                // If tweet fails as "status is duplicate", increment index.
-                if (error.code === 187) {
+                if (error.code === 187) { // "Status is duplicate".
                     incrementAndSaveIndex(index);
                 }
-
-            // Else tweet succeeded, increment index.
             } else {
                 console.log('Post to Twitter success:', success);
                 incrementAndSaveIndex(index);
             }
         });
-    }).catch(function (error) {
-        console.error('Get from AWS storage failure:', error);
-    });
+    }).catch(function (error) {});
 }
 
-// Get work name from environment (prod) or argument (dev).
+function devHandler () {
+    switch (process.argv[3]) {
+        case 'confirm-twitter':
+            confirmTwitterConfig();
+            break;
+        case 'get-index':
+            getIndex().then(function (success) {}).catch(function (error) {});
+            break;
+        case 'set-index':
+            setIndex(process.argv[4]).then(function (success) {}).catch(function (error) {});
+            break;
+        case 'execute':
+            handler(process.argv[2]);
+            break;
+        default:
+            throw new Error(`Invalid instruction: ${process.argv[3]}`);
+    }
+}
+
 const work = process.env.WORK || process.argv[2];
 if (
     work !== 'bttf' &&
@@ -111,28 +112,16 @@ if (
     work !== 'starwars' &&
     work !== 'willows'
     ) {
-    throw new Error(`Unrecognized work: ${work}`);
+    throw new Error(`Invalid work: ${work}`);
 }
 const lines = require(`./lines/${work}`);
 
-// Configure Twit.
 const Twit = require('twit');
 const twitterConfig = require(`./config/twitter/${work}`);
 const twitClient = new Twit(twitterConfig);
 
-// In dev, confirm Twitter and AWS configs (or tweet if specified).
 if (process.env.NODE_ENV !== 'production') {
-    if (process.argv[3] === 'tweet') {
-        handler(process.argv[2]);
-    } else {
-        confirmTwitterConfig();
-        getAwsParam({
-            name: 'index',
-        }).then(function (success) {
-            console.log('Get from AWS storage success:', success);
-        });
-    }
+    devHandler();
 }
 
-// Export handler for invocation in prod.
 exports.handler = handler;
