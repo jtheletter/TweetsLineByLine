@@ -2,37 +2,54 @@
 
 Twitter bot that posts written works line by line in order.
 
-## Dependencies:
-- [NPM Twit](https://www.npmjs.com/package/twit) for Twitter authentication and post handling.
+## Code Dependencies:
+- [NPM Twit](https://www.npmjs.com/package/twit) for Twitter authentication and posting.
+- [NPM AWS-SDK](https://www.npmjs.com/package/aws-sdk) for index storage (saved in dev only to reduce zip size).
+- [AWS CLI](https://docs.aws.amazon.com/cli/index.html) for CLI deployment (must install globally).
+
+## Platform Dependencies:
+- [Twitter](https://twitter.com/).
+- [Twitter Developer Platform](https://developer.twitter.com/en/docs/basics/apps/overview).
+- [AWS IAM](https://aws.amazon.com/iam/) for lambda access.
+- [AWS Systems Manager (SSM)](https://aws.amazon.com/systems-manager/) for index storage.
+- [AWS Lambda](https://aws.amazon.com/lambda/) for code storage and execution.
+- [AWS CloudWatch](https://aws.amazon.com/cloudwatch/) for scheduling and logs.
 
 ## History:
-- Initially served only one written work.
-- First written for [Heroku](https://www.heroku.com/). Unfortunately Heroku reboots worker dynos every 24 hours, which reset the index to zero and prevented the sequence of tweets from continuing in order.
-- Next adjusted to run on [AWS EC2](https://aws.amazon.com/ec2/). Unfortunately this proved more expensive than desired.
-- Then configured to run on [AWS Lambda](https://aws.amazon.com/lambda/), with its index saved in [AWS Systems Manager (SSM)](https://aws.amazon.com/systems-manager/)’s [Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html).
+- This bot initially served only one written work.
+- It was first written for [Heroku](https://www.heroku.com/). Unfortunately Heroku reboots worker dynos every 24 hours, which reset the index to zero and prevented the sequence of tweets from continuing in order.
+- It was next adjusted to run on [AWS EC2](https://aws.amazon.com/ec2/). Unfortunately this proved more expensive than desired.
+- It was then configured to run on AWS Lambda, with its index saved in AWS Systems Manager (SSM)’s Parameter Store.
 - Finally, the bot can now serve multiple works.
 
 ## Instructions:
-- Create a central [Twitter Dev App](https://developer.twitter.com/en/docs/basics/apps/overview).
-- For each work, create an individual Twitter account.
-- Create a central AWS account.
-- Create a central AWS [IAM](https://aws.amazon.com/iam/) [role](https://aws.amazon.com/iam/features/manage-roles/).
+For all written works:
+- Create a Twitter Dev App.
+- Create a AWS account.
+- Create an AWS IAM role.
   - Set type to AWS service.
   - Set use case to lambda.
-  - Set [permissions](https://aws.amazon.com/iam/features/manage-permissions/) to Lambda Full Access and SSM Full Access.
-- Create an index value (initialized to zero) for each work in AWS SSM Parameter Store.
-- Create an AWS lambda function for each work.
+  - Set permissions to Lambda Full Access and SSM Full Access.
+For each written work:
+- Create an individual Twitter account.
+- Generate tokens/keys to authorize Twitter app to post to Twitter account ([here](https://medium.com/geekculture/how-to-create-multiple-bots-with-a-single-twitter-developer-account-529eaba6a576) is one way to do so).
+- Create an index value (initialized to zero) in AWS SSM Parameter Store.
+- Create an AWS lambda function.
   - Create from scratch.
-  - Set function name to the name of the work.
-  - Set execution role to the central IAM role.
-  - Configure timeout to six seconds (each execution gets index from AWS, then posts text to Twitter, then saves new index to AWS; together this averages three seconds in [CloudWatch](https://aws.amazon.com/cloudwatch/)).
+  - Set function name to the work’s name.
+  - Set execution role to the IAM role.
+  - Configure general timeout to six seconds (each execution gets an index from AWS, posts text to Twitter, and saves a new index to AWS; together this averages three seconds in CloudWatch).
   - Configure environmental variables:
       - Add `NODE_ENV` as `production`.
-      - Add `WORK` as the name of the written work.
+      - Add `WORK` as the work’s name.
       - Add `ACCESS_TOKEN`, `ACCESS_TOKEN_SECRET`, `CONSUMER_KEY`, `CONSUMER_SECRET` per Twitter config.
-- Create an AWS [event rule](https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/Create-CloudWatch-Events-Scheduled-Rule.html) for each work.
+- Create an AWS CloudWatch event rule.
   - Schedule a fixed rate to the desired minutes.
   - Add the corresponding lambda as its target.
   - Toggle state to enabled when ready to begin.
-- Zip the code via `npm run zip`. Deploy to each bot via `npm run deploy -- ` followed by the work name.
-- View [logs](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/WhatIsCloudWatchLogs.html) in AWS CloudWatch.
+- View logs in AWS CloudWatch.
+- Check lines meet Twitter limits via `WORK=<work> npm run pre-check`.
+- Test Twitter and AWS credentials via `WORK=<work> npm run test`.
+- Zip code for deploy via `npm run zip`.
+- Deploy the zip via `WORK=<work> npm run deploy`.
+- Execute handler manually via `WORK=<work> npm run tweet`.
