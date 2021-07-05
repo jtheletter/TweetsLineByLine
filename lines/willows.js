@@ -1,6 +1,6 @@
 module.exports = [
 'THE WIND IN THE WILLOWS',
-'by KENNETH GRAHAME',
+'by KENNETH GRAHAME',
 'Chapter I: THE RIVER BANK',
 'The Mole had been working very hard all the morning, spring-cleaning his little home.',
 'First with brooms, then with dusters; then on ladders and steps and chairs, with a brush and a pail of whitewash; till he had dust in his throat and eyes, and splashes of whitewash all over his black fur, and an aching back and weary arms.',
@@ -3234,5 +3234,5 @@ module.exports = [
 'And yonder comes the famous Mr. Mole, of whom you so often have heard your father tell!”',
 'But when their infants were fractious and quite beyond control, they would quiet them by telling how, if they didn’t hush them and not fret them, the terrible grey Badger would up and get them.',
 'This was a base libel on Badger, who, though he cared little about Society, was rather fond of children; but it never failed to have its full effect.',
-'THE END',
+'THE END'
 ];

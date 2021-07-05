@@ -1,7 +1,7 @@
 module.exports = [
 'THE HOBBIT',
 'or THERE AND BACK AGAIN',
-'by J.R.R. TOLKIEN',
+'by J.R.R. TOLKIEN',
 'Chapter I: AN UNEXPECTED PARTY',
 'In a hole in the ground there lived a hobbit.',
 'Not a nasty, dirty, wet hole, filled with the ends of worms and an oozy smell, nor yet a dry, bare, sandy hole with nothing in it to sit down on or to eat: it was a hobbit-hole, and that means comfort.',
@@ -5692,8 +5692,7 @@ module.exports = [
 'He took to writing poetry and visiting the elves; and though many shook their heads and touched their foreheads and said “Poor old Baggins!” and though few believed any of his tales, he remained very happy to the end of his days, and those were extraordinarily long.',
 'One autumn evening some years afterwards Bilbo was sitting in his study writing his memoirs—he thought of calling them “There and Back Again, a Hobbit’s Holiday”—when there was a ring at the door.',
 'It was Gandalf and a dwarf; and the dwarf was actually Balin.',
-'“Come in!',
-'Come in!” said Bilbo, and soon they were settled in chairs by the fire.',
+'“Come in! Come in!” said Bilbo, and soon they were settled in chairs by the fire.',
 'If Balin noticed that Mr. Baggins’ waistcoat was more extensive (and had real gold buttons), Bilbo also noticed that Balin’s beard was several inches longer, and his jewelled belt was of great magnificence.',
 'They fell to talking of their times together, of course, and Bilbo asked how things were going in the lands of the Mountain.',
 'It seemed they were going very well.',
@@ -5710,4 +5709,5 @@ module.exports = [
 'You don’t really suppose, do you, that all your adventures and escapes were managed by mere luck, just for your sole benefit?',
 'You are a very fine person, Mr. Baggins, and I am very fond of you; but you are only quite a little fellow in a wide world after all!”',
 '“Thank goodness!” said Bilbo laughing, and handed him the tobacco-jar.',
+'THE END'
 ];
