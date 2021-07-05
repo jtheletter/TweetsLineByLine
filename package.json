@@ -1,6 +1,6 @@
 {
     "name": "twitterdialogbot",
-    "version": "2.1.0",
+    "version": "2.1.1",
     "description": "Twitter bot that posts written works line by line in order.",
     "author": "JP",
     "license": "ISC",
