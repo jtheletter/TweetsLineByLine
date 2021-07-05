@@ -1,11 +1,14 @@
 // Get named parameter from storage.
-async function getParam (param = {}) {
+async function getAwsParam (input = {}) {
     try {
-        const ssm = new (require('aws-sdk/clients/ssm'))();
-        const awsParam = {
-            Name: `/${work}/${param.name}`,
+        const { SSMClient, GetParameterCommand } = require('@aws-sdk/client-ssm');
+        const region = require(`./config/aws/${work}`).region;
+        const client = new SSMClient({ region });
+        const param = {
+            Name: `/${work}/${input.name}`
         };
-        const result = await ssm.getParameter(awsParam).promise();
+        const command = new GetParameterCommand(param);
+        const result = await client.send(command);
         return result;
     } catch (error) {
         throw error;
@@ -13,16 +16,23 @@ async function getParam (param = {}) {
 }
 
 // Set named parameter in storage.
-async function setParam (param = {}) {
-    const ssm = new (require('aws-sdk/clients/ssm'))();
-    const awsParam = {
-          Name: `/${work}/${param.name}`,
-          Overwrite: true,
-          Type: 'String',
-          Value: param.value,
-    };
-    const result = await ssm.putParameter(awsParam).promise();
-    return result;
+async function setAwsParam (input = {}) {
+    try {
+        const { SSMClient, PutParameterCommand } = require('@aws-sdk/client-ssm');
+        const region = require(`./config/aws/${work}`).region;
+        const client = new SSMClient({ region });
+        const param = {
+            Name: `/${work}/${input.name}`,
+            Overwrite: true,
+            Type: 'String',
+            Value: input.value,
+        };
+        const command = new PutParameterCommand(param);
+        const result = await client.send(command);
+        return result;
+    } catch (error) {
+        throw error;
+    }
 }
 
 // Increment provided index. Reset to zero if needed. Save to storage.
@@ -32,7 +42,7 @@ function incrementAndSaveIndex (index) {
         index = 0;
     }
     console.log(`Index incremented to ${index}. Saving to storage.`);
-    setParam({
+    setAwsParam({
         name: 'index',
         value: `${index}`,
     }).then(function (success) {
@@ -44,73 +54,56 @@ function incrementAndSaveIndex (index) {
 
 // Confirm Twitter config is valid.
 function confirmTwitterConfig () {
-    console.log('Confirming Twitter config.');
     twitClient.get('account/verify_credentials', {
         skip_status: true,
-
-    // On success, increment and save index, and program ends.
     }).then(function (success) {
         console.log('Twitter config is valid:', success.data);
-
-    // On error, send it to console, and program ends.
     }).catch(function (error) {
         console.error('Twitter config is invalid:', error.stack);
     });
 }
 
-// Get index from storage.
-// Either confirm Twitter config (in dev/CLI) or post indexed line to Twitter (in prod/AWS).
+// Get index from storage. Post indexed line to Twitter.
 function handler () {
 
     // Get index from AWS Parameter Store.
     console.log('Getting index from storage.');
-    getParam({
+    getAwsParam({
         name: 'index',
-
-    // On success, proceed.
     }).then(function (success) {
-        console.log('Get from storage success:', success);
+        console.log('Get from AWS storage success:', success);
 
         // Save stored index to local scope.
         let index = parseInt(success.Parameter.Value, 10);
-        console.log('Index from storage is:', index);
         let line = lines[index];
-        console.log('Line to tweet is:', line);
+        console.log(`Index from storage is ${index}. Line to tweet is:`, line);
 
-        // If not in production, confirm Twitter config is valid.
-        if (process.env.NODE_ENV !== 'production') {
-            confirmTwitterConfig();
+        // Tweet.
+        twitClient.post('statuses/update', {
+            status: line,
+        }, function (error, success) {
 
-        // Else tweet.
-        } else {
-            twitClient.post('statuses/update', {
-                status: line,
-            }, function (error, success) {
+            // If tweet fails, print error to the console.
+            if (error) {
+                console.error('Post to Twitter failure:', error);
 
-                // If tweet fails, print error to the console.
-                if (error) {
-                    console.error('Post to Twitter failure:', error);
-
-                    // If tweet fails as "status is duplicate", increment index.
-                    if (error.code === 187) {
-                        incrementAndSaveIndex(index);
-                    }
-
-                // Else tweet succeeded, increment index.
-                } else {
-                    console.log('Post to Twitter success:', success);
+                // If tweet fails as "status is duplicate", increment index.
+                if (error.code === 187) {
                     incrementAndSaveIndex(index);
                 }
-            });
-        }
 
-    // On failure, print error to console.
+            // Else tweet succeeded, increment index.
+            } else {
+                console.log('Post to Twitter success:', success);
+                incrementAndSaveIndex(index);
+            }
+        });
     }).catch(function (error) {
-        console.error('Get from storage failure:', error);
+        console.error('Get from AWS storage failure:', error);
     });
 }
 
-// Get work name from environment (prod/AWS) or argument (dev/CLI).
+// Get work name from environment (prod) or argument (dev).
 const work = process.env.WORK || process.argv[2];
 if (
     work !== 'bttf' &&
@@ -122,18 +115,24 @@ if (
 }
 const lines = require(`./lines/${work}`);
 
-// Configure AWS.
-const Aws = require('aws-sdk');
-const awsConfig = require(`./config/aws/${work}`);
-Aws.config.update({ region: awsConfig.region });
-
 // Configure Twit.
 const Twit = require('twit');
 const twitterConfig = require(`./config/twitter/${work}`);
 const twitClient = new Twit(twitterConfig);
 
-// Export handler for invocation.
-exports.handler = handler;
+// In dev, confirm Twitter and AWS configs (or tweet if specified).
+if (process.env.NODE_ENV !== 'production') {
+    if (process.argv[3] === 'tweet') {
+        handler(process.argv[2]);
+    } else {
+        confirmTwitterConfig();
+        getAwsParam({
+            name: 'index',
+        }).then(function (success) {
+            console.log('Get from AWS storage success:', success);
+        });
+    }
+}
 
-// Uncomment for CLI. Invoke with work name as argument.
-handler(process.argv[2]);
+// Export handler for invocation in prod.
+exports.handler = handler;
