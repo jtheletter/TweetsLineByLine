@@ -3,11 +3,13 @@
 Twitter bot that posts written works line by line in order.
 
 ## Code Dependencies:
+
 - [NPM Twit](https://www.npmjs.com/package/twit) for Twitter authentication and posting.
 - [NPM AWS-SDK](https://www.npmjs.com/package/aws-sdk) for index storage and retrieval.
-- [AWS CLI](https://docs.aws.amazon.com/cli/index.html) for CLI deployment. Installed globally, and not by NPM. Version 2 (latest) used.
+- [AWS CLI](https://docs.aws.amazon.com/cli/index.html) for CLI deployment. Installed globally and directly from Amazon. Version 2 (latest) used.
 
 ## Platform Dependencies:
+
 - [Twitter](https://twitter.com/).
 - [Twitter Developer Platform](https://developer.twitter.com/en/docs/basics/apps/overview).
 - [AWS IAM](https://aws.amazon.com/iam/) for lambda access.
@@ -16,6 +18,7 @@ Twitter bot that posts written works line by line in order.
 - [AWS CloudWatch](https://aws.amazon.com/cloudwatch/) for scheduling and logs.
 
 ## History:
+
 - This bot initially served only one written work.
 - It was first written for [Heroku](https://www.heroku.com/). Unfortunately Heroku reboots worker dynos every 24 hours, which reset the index to zero and prevented the sequence of tweets from continuing in order.
 - It was next adjusted to run on [AWS EC2](https://aws.amazon.com/ec2/). Unfortunately this proved more expensive than desired.
@@ -23,14 +26,18 @@ Twitter bot that posts written works line by line in order.
 - Finally, the bot can now serve multiple works.
 
 ## Instructions:
-For all written works:
+
+### For all written works:
+
 - Create a Twitter Dev App.
 - Create a AWS account.
 - Create an AWS IAM role.
   - Set type to AWS service.
   - Set use case to lambda.
   - Set permissions to Lambda Full Access and SSM Full Access.
-For each written work:
+
+### For each written work:
+
 - Create an individual Twitter account.
 - Generate tokens/keys to authorize Twitter app to post to Twitter account ([here](https://medium.com/geekculture/how-to-create-multiple-bots-with-a-single-twitter-developer-account-529eaba6a576) is one way to do so).
 - Create an index value (initialized to zero) in AWS SSM Parameter Store.
