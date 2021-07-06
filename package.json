@@ -1,6 +1,6 @@
 {
     "name": "twitterdialogbot",
-    "version": "2.1.1",
+    "version": "2.1.2",
     "description": "Twitter bot that posts written works line by line in order.",
     "author": "JP",
     "license": "ISC",
@@ -12,17 +12,15 @@
     "main": "index.js",
     "scripts": {
         "check-lines": "node checkLines.js ${WORK}",
-        "confirm-twitter": "npm install && node index.js ${WORK} confirm-twitter",
-        "get-index": "npm install && node index.js ${WORK} get-index",
-        "set-index": "npm install && node index.js ${WORK} set-index",
-        "zip": "npm install --production && rm twitterdialogbot.zip && zip -r twitterdialogbot.zip . -x \"**/*.gif\" -x \"**/*.jp*\" -x \"**/*.mov\" -x \"**/*.mp*\" -x \"**/*.png\" -x \"**/.DS_Store\" -x \"**/__*\" -x \"*.git*\" -x \"*.md\" -x \"*.zip\" -x \".DS_Store\" -x \"__*\" -x \"check.js\" -x \"config/**/dev.js\" -x \"images*\" && du -h twitterdialogbot.zip",
-        "deploy": "aws lambda update-function-code --zip-file fileb://twitterdialogbot.zip --function-name ${WORK}",
-        "execute": "npm install && node index.js ${WORK} execute"
+        "confirm-twitter": "node index.js ${WORK} confirm-twitter",
+        "get-index": "node index.js ${WORK} get-index",
+        "set-index": "node index.js ${WORK} set-index",
+        "zip": "rm twitterdialogbot.zip && zip -r twitterdialogbot.zip . -x \"**/*.gif\" -x \"**/*.jp*\" -x \"**/*.mov\" -x \"**/*.mp*\" -x \"**/*.png\" -x \"**/.DS_Store\" -x \"**/__*\" -x \"*.git*\" -x \"*.md\" -x \"*.zip\" -x \".DS_Store\" -x \"__*\" -x \"check.js\" -x \"config/**/dev.js\" -x \"images*\" && du -h twitterdialogbot.zip",
+        "deploy": "aws lambda update-function-code --zip-file fileb://twitterdialogbot.zip --cli-connect-timeout 150 --function-name ${WORK}",
+        "execute": "node index.js ${WORK} execute"
     },
     "dependencies": {
-        "twit": "^2.2.11"
-    },
-    "devDependencies": {
+        "twit": "^2.2.11",
         "@aws-sdk/client-ssm": "^3.20.0"
     }
 }

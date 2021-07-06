@@ -4,8 +4,8 @@ Twitter bot that posts written works line by line in order.
 
 ## Code Dependencies:
 - [NPM Twit](https://www.npmjs.com/package/twit) for Twitter authentication and posting.
-- [NPM AWS-SDK](https://www.npmjs.com/package/aws-sdk) for index storage (saved in dev only to reduce zip size).
-- [AWS CLI](https://docs.aws.amazon.com/cli/index.html) for CLI deployment (must install globally).
+- [NPM AWS-SDK](https://www.npmjs.com/package/aws-sdk) for index storage and retrieval.
+- [AWS CLI](https://docs.aws.amazon.com/cli/index.html) for CLI deployment. Installed globally, and not by NPM. Version 2 (latest) used.
 
 ## Platform Dependencies:
 - [Twitter](https://twitter.com/).
@@ -54,5 +54,5 @@ For each written work:
     - Get index from AWS storage via `WORK=<work> npm run get-index`.
     - Set index in AWS storage via `WORK=<work> npm run set-index <index>`.
     - Zip code for deploy via `npm run zip`.
-    - Deploy the zip via `WORK=<work> npm run deploy`.
+    - Deploy the zip via `WORK=<work> npm run deploy`. Increase timeout in script if needed.
     - Execute handler manually via `WORK=<work> npm run execute`.
