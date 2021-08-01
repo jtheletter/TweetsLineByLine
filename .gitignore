@@ -3,3 +3,4 @@
 __*
 config/**/dev.js
 node_modules
+~$*.xlsx

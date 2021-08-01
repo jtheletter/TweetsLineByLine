@@ -1,6 +1,6 @@
-# Twitter Dialog Bot
+# twitter dialog bot
 
-Twitter bot that posts written works line by line in order.
+A bot to tweet written works line by line in order.
 
 ## Code Dependencies:
 
@@ -20,8 +20,8 @@ Twitter bot that posts written works line by line in order.
 ## History:
 
 - This bot initially served only one written work.
-- It was first written for [Heroku](https://www.heroku.com/). Unfortunately Heroku reboots worker dynos every 24 hours, which reset the index to zero and prevented the sequence of tweets from continuing in order.
-- It was next adjusted to run on [AWS EC2](https://aws.amazon.com/ec2/). Unfortunately this proved more expensive than desired.
+- It was first written for [Heroku](https://www.heroku.com/). Heroku reboots worker dynos every 24 hours, which reset the index to zero and prevented the sequence of tweets from continuing in order.
+- It was next adjusted to run on [AWS EC2](https://aws.amazon.com/ec2/). This proved more expensive than desired.
 - It was then configured to run on AWS Lambda, with its index saved in AWS Systems Manager (SSM)’s Parameter Store.
 - Finally, the bot can now serve multiple works.
 
@@ -29,8 +29,9 @@ Twitter bot that posts written works line by line in order.
 
 ### For all written works:
 
-- Create a Twitter Dev App.
-- Create a AWS account.
+- Install AWS CLI. Access keys are stored in `~/.aws/credentials`.
+- Create a Twitter dev app.
+- Create an AWS account.
 - Create an AWS IAM role.
   - Set type to AWS service.
   - Set use case to lambda.
@@ -38,9 +39,10 @@ Twitter bot that posts written works line by line in order.
 
 ### For each written work:
 
-- Create an individual Twitter account.
-- Generate tokens/keys to authorize Twitter app to post to Twitter account ([here](https://medium.com/geekculture/how-to-create-multiple-bots-with-a-single-twitter-developer-account-529eaba6a576) is one way to do so).
-- Create an index value (initialized to zero) in AWS SSM Parameter Store.
+- Save the work’s lines to the `lines` directory, and add its name to the `works.js` list.
+- Create a Twitter account.
+- Generate tokens/keys to authorize the Twitter app to post to the Twitter account ([here](https://medium.com/geekculture/how-to-create-multiple-bots-with-a-single-twitter-developer-account-529eaba6a576) is one way to do so). Save to `config/twitter/<work>/dev.js`.
+- Create an index value (initialized to zero) in AWS SSM Parameter Store. Save its region in `config/aws/<work>/`.
 - Create an AWS lambda function.
   - Create from scratch.
   - Set function name to the work’s name.
@@ -49,17 +51,22 @@ Twitter bot that posts written works line by line in order.
   - Configure environmental variables:
       - Add `NODE_ENV` as `production`.
       - Add `WORK` as the work’s name.
-      - Add `ACCESS_TOKEN`, `ACCESS_TOKEN_SECRET`, `CONSUMER_KEY`, `CONSUMER_SECRET` per Twitter config.
+      - Add per Twitter config:
+        - `ACCESS_TOKEN` (work bot’s oauth_token).
+        - `ACCESS_TOKEN_SECRET` (work bot’s oauth_token_secret).
+        - `CONSUMER_KEY` (dev app’s API Key).
+        - `CONSUMER_SECRET` (dev app’s API Secret Key).
 - Create an AWS CloudWatch event rule.
   - Schedule a fixed rate to the desired minutes.
   - Add the corresponding lambda as its target.
-  - Toggle state to enabled when ready to begin.
+  - Toggle state to enabled when ready to begin automated executions.
+  - NB: AWS will execute upon enablement or update.
 - View logs in AWS CloudWatch.
 - Command-line scripts:
-    - Check lines meet Twitter limits via `WORK=<work> npm run check-lines`.
-    - Confirm Twitter credentials via `WORK=<work> npm run confirm-twitter`.
-    - Get index from AWS storage via `WORK=<work> npm run get-index`.
-    - Set index in AWS storage via `WORK=<work> npm run set-index <index>`.
-    - Zip code for deploy via `npm run zip`.
-    - Deploy the zip via `WORK=<work> npm run deploy`. Increase timeout in script if needed.
-    - Execute handler manually via `WORK=<work> npm run execute`.
+    - Check lines meet Twitter limits: `WORK=<work> npm run check-lines`
+    - Confirm Twitter credentials: `WORK=<work> npm run confirm-twitter`
+    - Get index from AWS storage: `WORK=<work> npm run get-index`
+    - Set index in AWS storage: `WORK=<work> npm run set-index <index>`
+    - Zip code for deploy: `npm run zip`
+    - Deploy the zip (increase timeout in script if needed): `WORK=<work> npm run deploy`
+    - Execute handler manually: `WORK=<work> npm run execute`
