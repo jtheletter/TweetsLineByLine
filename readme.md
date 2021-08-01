@@ -42,11 +42,11 @@ A bot to tweet written works line by line in order.
 - Save the work’s lines to the `lines` directory, and add its name to the `works.js` list.
 - Create a Twitter account.
 - Generate tokens/keys to authorize the Twitter app to post to the Twitter account ([here](https://medium.com/geekculture/how-to-create-multiple-bots-with-a-single-twitter-developer-account-529eaba6a576) is one way to do so). Save to `config/twitter/<work>/dev.js`.
-- Create an index value (initialized to zero) in AWS SSM Parameter Store. Save its region in `config/aws/<work>/`.
+- Create an AWS SSM Parameter Store named `/<work>/index` with Value `0`. Save its region in `config/aws/<work>/`.
 - Create an AWS lambda function.
-  - Create from scratch.
-  - Set function name to the work’s name.
-  - Set execution role to the IAM role.
+  - Author from scratch.
+  - Set the function name to the work’s name.
+  - Change the default execution role to the IAM role.
   - Configure general timeout to six seconds (each execution gets an index from AWS, posts text to Twitter, and saves a new index to AWS; together this averages three seconds in CloudWatch).
   - Configure environmental variables:
       - Add `NODE_ENV` as `production`.
@@ -59,8 +59,9 @@ A bot to tweet written works line by line in order.
 - Create an AWS CloudWatch event rule.
   - Schedule a fixed rate to the desired minutes.
   - Add the corresponding lambda as its target.
-  - Toggle state to enabled when ready to begin automated executions.
-  - NB: AWS will execute upon enablement or update.
+  - Name it the same as the work.
+  - Toggle its state to enabled when ready to begin automated executions.
+  - NB: AWS will not execute upon enablement during creation, but it will execute upon enablement after creation or upon saving edits to the rule.
 - View logs in AWS CloudWatch.
 - Command-line scripts:
     - Check lines meet Twitter limits: `WORK=<work> npm run check-lines`
