@@ -9,7 +9,7 @@ async function getIndex () {
         const result = await client.send(command);
         const index = parseInt(result.Parameter.Value, 10);
         if (isNaN(index) || index < 0 || lines.length <= index) {
-            throw new Error(`Invalid index: ${index}`);
+            throw new Error(`Invalid index ${index} for ${lines.length} lines.`);
         }
         console.log('Get from storage success:', result);
         console.log(`Index from storage is ${result.Parameter.Value}.`);

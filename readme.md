@@ -16,6 +16,7 @@ Written works in tweets line by line.
 - [AWS Systems Manager (SSM)](https://aws.amazon.com/systems-manager/) for index storage.
 - [AWS Lambda](https://aws.amazon.com/lambda/) for code storage and execution.
 - [AWS CloudWatch](https://aws.amazon.com/cloudwatch/) for scheduling and logs.
+- Optional: [AWS Simple Notification Service (SNS)](https://aws.amazon.com/sns/) for emailed errors.
 
 ## History:
 
@@ -36,6 +37,7 @@ Written works in tweets line by line.
   - Set type to AWS service.
   - Set use case to lambda.
   - Set permissions to Lambda Full Access and SSM Full Access.
+- Optional: Create an AWS Lambda function to email logged errors automatically (see `logEmailer.js`).
 
 ### For each written work:
 
@@ -62,7 +64,8 @@ Written works in tweets line by line.
   - Name it the same as the work.
   - Toggle its state to enabled when ready to begin automated executions.
   - NB: AWS will not execute upon enablement during creation, but it will execute upon enablement after creation or upon saving edits to the rule.
-- View logs in AWS CloudWatch.
+- View Log groups in AWS CloudWatch. Reduce retention settings from the “never expire” default.
+- Optional: Add Log group as a trigger to `logEmailer.js` Lambda function for automated error emails.
 - Command-line scripts:
     - Check lines meet Twitter limits: `WORK=<work> npm run check-lines`
     - Break lines to meet Twitter limits (overwrites the work’s “lines” file): `WORK=<work> npm run break-long-lines "<breaker>"`
