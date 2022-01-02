@@ -8,7 +8,7 @@ async function getIndex () {
         const command = new GetParameterCommand(param);
         const result = await client.send(command);
         const index = parseInt(result.Parameter.Value, 10);
-        if (isNaN(index) || index < 0 || lines.length <= index) {
+        if (isNaN(index) || index < -1 || lines.length <= index) {
             throw new Error(`Invalid index ${index} for ${lines.length} lines.`);
         }
         console.log('Get from storage success:', result);
@@ -24,7 +24,7 @@ async function setIndex (input) {
     console.log(`Saving index ${input} to storage.`);
     try {
         const index = parseInt(input, 10);
-        if (isNaN(index) || index < 0) {
+        if (isNaN(index) || index < -1) {
             throw new Error(`Invalid index: ${index}`);
         }
         const client = new SSMClient({ region });
@@ -47,7 +47,7 @@ async function setIndex (input) {
 function incrementAndSaveIndex (index) {
     index += 1;
     if (lines.length <= index) {
-        index = 0;
+        index = -1; // To trigger promotional tweet.
     }
     console.log(`Index incremented to ${index}.`);
     setIndex(`${index}`).then(function (success) {}).catch(function (error) {});
@@ -63,10 +63,26 @@ function confirmTwitterConfig () {
     });
 }
 
+function promotion () {
+    const handle = worksObject[work];
+    const handles = Object.values(worksObject);
+    const length = handles.length;
+    let i = handles.indexOf(handle);
+    let j = i;
+    while (j === i) { // Choose a random handle that isn't for the current work.
+        j = Math.floor(Math.random() * length);
+    }
+    let k = j;
+    while (k === i || k === j) { // Choose a random handle that isn't for the current work nor the previous choice.
+        k = Math.floor(Math.random() * length);
+    }
+    return `Follow @${handles[j]}, @${handles[k]}, and more #Tweets_LBL. https://twitter.com/i/lists/1421214471087874067`;
+}
+
 function handler () {
     getIndex().then(function (index) {
-        let line = lines[index];
-        console.log(`Index from storage is ${index}. Line to tweet is:`, line);
+        let line = -1 < index ? lines[index] : promotion();
+        console.log('Line to tweet is:', line);
         twitClient.post('statuses/update', {
             status: line,
         }, function (error, success) {
@@ -102,7 +118,8 @@ function devHandler () {
     }
 }
 
-const works = require('./works');
+const worksObject = require('./works');
+const works = Object.keys(worksObject);
 const work = process.env.WORK || process.argv[2];
 if (!works.includes(work)) {
     throw new Error(`Invalid work: ${work}`);

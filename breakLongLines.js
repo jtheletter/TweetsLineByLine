@@ -35,7 +35,8 @@ function breakLongLines (charLimit = 280) {
     return lines;
 }
 
-const works = require('./works');
+const worksObject = require('./works');
+const works = Object.keys(worksObject);
 const work = process.argv[2];
 const breaker = process.argv[3];
 const fs = require('fs');
@@ -43,8 +44,14 @@ const fs = require('fs');
 if (!works.includes(work)) {
     throw new Error(`Invalid work: ${work}`);
 }
-if (typeof breaker !== 'string' || breaker.length < 1 || breaker.split(' ').length > 2) {
-    throw new Error(`Invalid breaker: ${breaker}`);
+if (typeof breaker !== 'string') {
+    throw new Error(`Breaker should be a string. Received type: ${typeof breaker}`);
+}
+if (breaker.length < 1) {
+    throw new Error(`Breaker is too short. Received length: ${breaker.length}`);
+}
+if (breaker.split(' ').length > 2) {
+    throw new Error(`Breaker can have up to only one space character. Found: ${breaker.split(' ').length - 1}`);
 }
 
 console.log('process.argv:', process.argv);

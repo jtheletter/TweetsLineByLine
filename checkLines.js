@@ -7,6 +7,11 @@ function checkLines (charLimit = 280, dupeLimit = 8) {
         return;
     }
 
+    if (lines.length < 2 * dupeLimit) {
+        console.error('List of lines is too short. Received length:', lines.length);
+        return;
+    }
+
     console.log(`Checking ${work} for lines longer than ${charLimit} characters, and for duplicate lines within ${dupeLimit} indices of each other.`);
 
     const longs = [];
@@ -31,7 +36,8 @@ function checkLines (charLimit = 280, dupeLimit = 8) {
     console.log('Dupes:', dupes);
 }
 
-const works = require('./works');
+const worksObject = require('./works');
+const works = Object.keys(worksObject);
 const work = process.argv[2];
 
 if (!works.includes(work)) {

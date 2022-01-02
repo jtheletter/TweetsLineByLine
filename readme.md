@@ -41,7 +41,7 @@ Written works in tweets line by line.
 
 ### For each written work:
 
-- Save the work’s lines to the `lines` directory, and add its name to the `works.js` list.
+- Save the work’s lines to the `lines` directory, and add its name and handle to the `works.js` list.
 - Create a Twitter account.
 - Generate tokens/keys to authorize the Twitter app to post to the Twitter account ([here](https://medium.com/geekculture/how-to-create-multiple-bots-with-a-single-twitter-developer-account-529eaba6a576) is one way to do so). Save to `config/twitter/<work>/dev.js`.
 - Create an AWS SSM Parameter Store named `/<work>/index` with string/text value `0`. Save its region in `config/aws/<work>/`.
@@ -71,7 +71,7 @@ Written works in tweets line by line.
     - Break lines to meet Twitter limits (overwrites the work’s “lines” file): `WORK=<work> npm run break-long-lines "<breaker>"`
     - Confirm Twitter credentials: `WORK=<work> npm run confirm-twitter`
     - Get index from AWS storage: `WORK=<work> npm run get-index`
-    - Set index in AWS storage: `WORK=<work> npm run set-index <index>`
+    - Set index in AWS storage (use `--` before index if `-1`): `WORK=<work> npm run set-index <index>`
     - Zip code for deploy: `npm run zip`
     - Deploy the zip (increase timeout in script if needed): `WORK=<work> npm run deploy`
     - Execute handler manually: `WORK=<work> npm run execute`
