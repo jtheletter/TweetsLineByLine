@@ -65,7 +65,7 @@ Written works in tweets line by line.
   - Toggle its state to enabled when ready to begin automated executions.
   - NB: AWS will not execute upon enablement during creation, but it will execute upon enablement after creation or upon saving edits to the rule.
 - View Log groups in AWS CloudWatch. Reduce retention settings from the “never expire” default.
-- Optional: Add Log group as a trigger to `logEmailer.js` Lambda function for automated error emails.
+- Optional: Add Log group as a trigger to `logEmailer.js` Lambda function, filter pattern `ERROR`, for automated error emails (filter name is email subject).
 - Command-line scripts:
     - Check lines meet Twitter limits: `WORK=<work> npm run check-lines`
     - Break lines to meet Twitter limits (overwrites the work’s “lines” file): `WORK=<work> npm run break-long-lines "<breaker>"`
