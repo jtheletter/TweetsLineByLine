@@ -8,6 +8,7 @@ module.exports = {
     hobbit: 'Hobbit_LBL',
     indyjones: 'IndyJones_LBL',
     lotr: 'LOTR_LBL',
+    midsummer: 'Midsummer_LBL',
     mobydick: 'MobyDick_LBL',
     princessbride: 'ThePrincess_LBL',
     romeojuliet: 'RomeoJuliet_LBL',
