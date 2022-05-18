@@ -2,5 +2,6 @@
 *.zip
 __*
 config/**/dev.js
+lines/test.js
 node_modules
 ~$*.xlsx

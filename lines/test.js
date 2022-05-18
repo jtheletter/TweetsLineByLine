@@ -1,4 +1,4 @@
-module.exports = ['test 0','test 1',
+module.exports = ['‎ח‎ו‎,‎ ‎H‎e‎b‎r‎o‎w‎.‎','\u200Eח\u200Eו\u200E,\u200E Hebraw.\u200E',
 'test 2',
 'test 3',
 'test 4',
