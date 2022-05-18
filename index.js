@@ -69,14 +69,24 @@ function promotion () {
     const length = handles.length;
     let i = handles.indexOf(handle);
     let j = i;
-    while (j === i) { // Choose a random handle that isn't for the current work.
+    while (j === i || works[j] === 'test') { // Choose a random handle that isn't for the current work and isn't for tests.
         j = Math.floor(Math.random() * length);
     }
     let k = j;
-    while (k === i || k === j) { // Choose a random handle that isn't for the current work nor the previous choice.
+    while (k === i || k === j || works[k] === 'test') { // Choose a random handle that isn't for the current work, isn't for the previous choice, and isn't for tests.
         k = Math.floor(Math.random() * length);
     }
-    return `Follow @${handles[j]}, @${handles[k]}, and more #Tweets_LBL. https://twitter.com/i/lists/1421214471087874067`;
+    const verbs = [
+        'Enjoy',
+        'Follow',
+    ];
+    const determiners = [
+        'more',
+        'other',
+    ];
+    const verb = verbs[Math.floor(Math.random() * verbs.length)];
+    const determiner = determiners[Math.floor(Math.random() * determiners.length)];
+    return `${verb} @${handles[j]}, @${handles[k]}, and ${determiner} #Tweets_LBL. https://twitter.com/i/lists/1421214471087874067`;
 }
 
 function handler () {
