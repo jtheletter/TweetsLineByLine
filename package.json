@@ -1,6 +1,6 @@
 {
     "name": "TweetsLineByLine",
-    "version": "4.0.0",
+    "version": "4.1.0",
     "description": "Written works in tweets line by line.",
     "author": "JP",
     "license": "ISC",
@@ -13,6 +13,7 @@
     "scripts": {
         "check-lines": "node checkLines.js ${WORK}",
         "break-long-lines": "node breakLongLines.js ${WORK}",
+        "break-paragraphs": "node breakParagraphs.js ${WORK}",
         "confirm-twitter": "node index.js ${WORK} confirm-twitter",
         "get-index": "node index.js ${WORK} get-index",
         "set-index": "node index.js ${WORK} set-index",

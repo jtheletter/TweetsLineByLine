@@ -67,6 +67,7 @@ Written works in tweets line by line.
 - View Log groups in AWS CloudWatch. Reduce retention settings from the “never expire” default.
 - Optional: Add Log group as a trigger to `logEmailer.js` Lambda function, filter pattern `ERROR`, for automated error emails (filter name is email subject).
 - Command-line scripts:
+    - Break paragraphs into sentences (overwrites the work’s “lines” file): `WORK=<work> npm run break-paragraphs`
     - Check lines meet Twitter limits: `WORK=<work> npm run check-lines`
     - Break lines to meet Twitter limits (overwrites the work’s “lines” file): `WORK=<work> npm run break-long-lines "<breaker>"`
     - Confirm Twitter credentials: `WORK=<work> npm run confirm-twitter`

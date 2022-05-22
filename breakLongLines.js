@@ -4,36 +4,45 @@
 // Breaker must be either one or two "words", as delineated by a space character.
 // If breaker is one "word", then overly long lines will be split by the breaker, with the breaker appended to the end of each fragment except the last.
 // If breaker is two "words", then long lines are split by the breaker phrase, with the first word appended to the end of each fragment but the last, and the second word prepended to start of each fragment except the first.
+// Example breakers:
+// ", but"
+// "; "
+// "\—"
 
 function breakLongLines (charLimit = 280) {
-
     if (!Array.isArray(lines) || lines.length < 1) {
         console.error('Invalid lines. Expected an array of strings. Received:', lines);
         return;
     }
 
-    let i, j, splitLineArr;
+    let fragInd, frags, lineInd;
 
-    for (i = 0; i < lines.length; i++) {
+    // Search all lines.
+    for (lineInd = 0; lineInd < lines.length; lineInd++) {
 
-        if (lines[i].length > charLimit) { // If line exceeds limit.
-            if (lines[i].includes(breaker)) { // And if line includes breaker.
-                splitLineArr = lines[i].split(breaker); // Create temporary array of line fragments, split by breaker.
-                for (j = 0; j < splitLineArr.length - 1; j++) { // For every fragment but last...
+        if (charLimit < lines[lineInd].length) { // If line exceeds limit.
+            if (lines[lineInd].includes(breaker)) { // And if line includes breaker.
+                frags = lines[lineInd].split(breaker); // Create array of fragments split by breaker.
+
+                // Split removes breaker. Re-add it to fragments.
+                for (fragInd = 0; fragInd < frags.length - 1; fragInd++) { // For every fragment but last...
                     if (breaker.split(' ').length > 1) { // If breaker has a space...
-                        splitLineArr[j] += breaker.split(' ')[0]; // Concat first half of breaker back onto end of fragment.
-                        splitLineArr[j + 1] = breaker.split(' ')[1] + splitLineArr[j + 1]; // Concat second half of breaker onto start of fragment.
+                        frags[fragInd] += breaker.split(' ')[0]; // Concat first half of breaker back onto end of fragment.
+                        frags[fragInd + 1] = breaker.split(' ')[1] + frags[fragInd + 1]; // Concat second half of breaker onto start of next fragment.
                     } else {
-                        splitLineArr[j] += breaker; // Concat breaker onto end of fragment.
+                        frags[fragInd] += breaker; // Concat breaker onto end of fragment.
                     }
                 }
-                lines.splice(...[i, 1].concat(splitLineArr)); // Splice fragments back into lines.
+
+                // Splice fragments back into lines.
+                lines.splice(...[lineInd, 1].concat(frags));
             }
         }
-
     }
     return lines;
 }
+
+console.log('process.argv:', process.argv);
 
 const worksObject = require('./works');
 const works = Object.keys(worksObject);
@@ -54,7 +63,6 @@ if (breaker.split(' ').length > 2) {
     throw new Error(`Breaker can have up to only one space character. Found: ${breaker.split(' ').length - 1}`);
 }
 
-console.log('process.argv:', process.argv);
 console.log('breaker:', breaker);
 console.log('breaker.length:', breaker.length);
 
