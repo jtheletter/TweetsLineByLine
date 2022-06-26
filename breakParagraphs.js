@@ -34,6 +34,8 @@ function breakParagraphs () {
         'DR. ',
         'Gen. ',
         'GEN. ',
+        'JR. ',
+        'Jr. ',
         'Lt. ',
         'LT. ',
         'Maj. ',
