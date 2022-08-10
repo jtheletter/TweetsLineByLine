@@ -2080,7 +2080,7 @@ module.exports = ['BACK TO THE FUTURE','Written by ROBERT ZEMECKIS & BOB GALE'
 'Get in!',
 'Yes! There he is, Doc!',
 'Let’s land on him. We’ll cripple his car.',
-'Marty, he’s in a ‘46 Ford. We’re a DeLorean. He’d rip through us like we were tin foil.',
+'Marty, he’s in a ‘46 Ford. We’re in a DeLorean. He’d rip through us like we were tin foil.',
 'So what do we do?',
 'I have a plan.',
 'Repeating tonight’s earlier weather bulletin, a severe thunderstorm is heading for Hill Valley…',

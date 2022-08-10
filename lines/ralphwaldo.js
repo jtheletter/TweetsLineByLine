@@ -1336,7 +1336,7 @@ module.exports = [
 'If you serve an ungrateful master, serve him the more.',
 'Put God in your debt.',
 'Every stroke shall be repaid.',
-'The longer The payment is withholden, the better for you; for compound interest on compound interest is the rate and usage of this exchequer.',
+'The longer the payment is withholden, the better for you; for compound interest on compound interest is the rate and usage of this exchequer.',
 'The history of persecution is a history of endeavors to cheat nature, to make water run up hill, to twist a rope of sand.',
 'It makes no difference whether the actors be many or one, a tyrant or a mob.',
 'A mob is a society of bodies voluntarily bereaving themselves of reason and traversing its work.',
