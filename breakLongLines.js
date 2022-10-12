@@ -1,4 +1,4 @@
-// WARNING: This functions overwrites the work's "lines" file.
+// WARNING: This function overwrites the work's "lines" file.
 // Break lines that are too long for Twitter using a breaker that is input on the command line.
 // Breaker can contain any characters (such as letters or punctuation).
 // Breaker must be either one or two "words", as delineated by a space character.

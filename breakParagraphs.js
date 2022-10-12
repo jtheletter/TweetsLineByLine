@@ -1,4 +1,4 @@
-// WARNING: This functions overwrites the work's "lines" file.
+// WARNING: This function overwrites the work's "lines" file.
 
 function breakParagraphs () {
     if (!Array.isArray(lines) || lines.length < 1) {
