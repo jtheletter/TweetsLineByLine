@@ -1,6 +1,4 @@
-module.exports = [
-'THE INVISIBLE MAN',
-'A Grotesque Romance',
+module.exports = ['THE INVISIBLE MAN','A Grotesque Romance',
 'By H.G. WELLS',
 'Chapter I: THE STRANGE MAN’S ARRIVAL',
 'The stranger came early in February, one wintry day, through a biting wind and a driving snow, the last snowfall of the year, over the down, walking from Bramblehurst railway station, and carrying a little black portmanteau in his thickly gloved hand.',
@@ -1503,8 +1501,7 @@ module.exports = [
 'There is a clergyman and a medical gent witnesses—saw ’im all right and proper—or leastways didn’t see ’im.',
 'He was staying, it says, at the ‘Coach an’ Horses,’ and no one don’t seem to have been aware of his misfortune, it says, aware of his misfortune, until in an Altercation in the inn, it says, his bandages on his head was torn off.',
 'It was then ob-served that his head was invisible.',
-'Attempts were At Once made to secure him, but casting off his garments, it says, he succeeded in escaping, but not until after a desperate struggle, in which he had inflicted serious injuries, it says, on our worthy and able constable, Mr. J. A.',
-'Jaffers.',
+'Attempts were At Once made to secure him, but casting off his garments, it says, he succeeded in escaping, but not until after a desperate struggle, in which he had inflicted serious injuries, it says, on our worthy and able constable, Mr. J. A. Jaffers.',
 'Pretty straight story, eh?',
 'Names and everything.”',
 '“Lord!” said Mr. Marvel, looking nervously about him, trying to count the money in his pockets by his unaided sense of touch, and full of a strange and novel idea.',
