@@ -1,6 +1,6 @@
 {
     "name": "TweetsLineByLine",
-    "version": "4.1.0",
+    "version": "4.2.0",
     "description": "Written works in tweets line by line.",
     "author": "JP",
     "license": "ISC",
@@ -19,7 +19,8 @@
         "set-index": "node index.js ${WORK} set-index",
         "zip": "if [[ -f TweetsLineByLine.zip ]]; then rm TweetsLineByLine.zip; fi; zip -r TweetsLineByLine.zip . -x \"**/*.gif\" -x \"**/*.jp*\" -x \"**/*.mov\" -x \"**/*.mp*\" -x \"**/*.png\" -x \"**/.DS_Store\" -x \"**/__*\" -x \"*.git*\" -x \"*.md\" -x \"*.xlsx\" -x \"*.zip\" -x \".DS_Store\" -x \"__*\" -x \"check.js\" -x \"config/**/dev.js\" -x \"images*\"; du -h TweetsLineByLine.zip;",
         "deploy": "aws lambda update-function-code --zip-file fileb://TweetsLineByLine.zip --cli-connect-timeout 150 --function-name ${WORK}",
-        "execute": "node index.js ${WORK} execute"
+        "execute": "node index.js ${WORK} execute",
+        "psa": "node index.js ${WORK} psa"
     },
     "dependencies": {
         "twit": "^2.2.11",

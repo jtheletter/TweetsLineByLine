@@ -109,6 +109,18 @@ function handler () {
     }).catch(function (error) {});
 }
 
+function psa (status) {
+    twitClient.post('statuses/update', {
+        status,
+    }, function (error, success) {
+        if (error) {
+            console.error('Post to Twitter failure:', error);
+        } else {
+            console.log('Post to Twitter success:', `https://twitter.com/${worksObject[work]}/status/${success.id_str}`);
+        }
+    });
+}
+
 function devHandler () {
     switch (process.argv[3]) {
         case 'confirm-twitter':
@@ -122,6 +134,9 @@ function devHandler () {
             break;
         case 'execute':
             handler(process.argv[2]);
+            break;
+        case 'psa':
+            psa(process.argv[4]);
             break;
         default:
             throw new Error(`Invalid instruction: ${process.argv[3]}`);

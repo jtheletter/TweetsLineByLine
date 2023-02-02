@@ -76,3 +76,4 @@ Written works in tweets line by line.
     - Zip code for deploy: `npm run zip`
     - Deploy the zip (increase timeout in script if needed): `WORK=<work> npm run deploy`
     - Execute handler manually: `WORK=<work> npm run execute`
+    - Tweet a special announcement without iterating index: `WORK=<work> npm run psa <announcement>`
