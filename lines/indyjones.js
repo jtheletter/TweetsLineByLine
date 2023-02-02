@@ -225,7 +225,7 @@ module.exports = ['RAIDERS OF THE LOST ARK','Screenplay by LAWRENCE KASDAN\nSto
 'I never meant to hurt you.',
 'I was a child.',
 'I was in love.',
-'It was wrong and you knew it!',
+'It was wrong, and you knew it!',
 'You knew what you were doing.',
 'Now I do! This is my place.',
 'Get out!',
