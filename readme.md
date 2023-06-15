@@ -43,7 +43,16 @@ Written works in tweets line by line.
 
 - Save the work’s lines to the `lines` directory, and add its name and handle to the `works.js` list.
 - Create a Twitter account.
-- Generate tokens/keys to authorize the Twitter app to post to the Twitter account ([here](https://medium.com/geekculture/how-to-create-multiple-bots-with-a-single-twitter-developer-account-529eaba6a576) is one way to do so). Save to `config/twitter/<work>/dev.js`.
+- Generate tokens/keys to authorize the Twitter app to post to the Twitter account:
+  - Visit this URL on the dev account’s browser to get new temporary/one-use tokens:
+    - `https://twitter.com/oauth/request_token?oauth_consumer_key=API_KEY_FROM_TWITTER_DEVELOPER_PORTAL&oauth_callback=oob`
+  - Visit this URL on the bot account’s browser, with the `oauth_token` from DOM output of the previous step, and click “Authorize app”:
+    - `https://twitter.com/oauth/authenticate?oauth_token=OAUTH_TOKEN_FROM_PREVIOUS_STEP`
+  - Run this curl POST in Terminal, with the `oauth_token` and `oauth_verifier` PIN from the DOM outputs of the previous steps:
+    - `curl --request POST --url 'https://twitter.com/oauth/access_token?oauth_token=OAUTH_TOKEN_FROM_PREVIOUS_STEP&oauth_verifier=PIN_FROM_PREVIOUS_STEP' && print ;`
+  - Save the output `oauth_token` for the `access_token`, and the `oauth_token_secret` for the `access_token_secret` in the Twitter config:
+    - `oauth_token=ACCESS_TOKEN&oauth_token_secret=ACCESS_TOKEN_SECRET&user_id=USER_ID&screen_name=SCREEN_NAME`
+- Save tokens/keys to `config/twitter/<work>/dev.js`.
 - Create an AWS SSM Parameter Store named `/<work>/index` with string/text value `0`. Save its region in `config/aws/<work>/`.
 - Create an AWS lambda function.
   - Author from scratch.
@@ -51,13 +60,13 @@ Written works in tweets line by line.
   - Change the default execution role to the IAM role.
   - Configure general timeout to six seconds (each execution gets an index from AWS, posts text to Twitter, and saves a new index to AWS; together this averages three seconds in CloudWatch).
   - Configure environmental variables:
-      - Add `NODE_ENV` as `production`.
-      - Add `WORK` as the work’s name.
-      - Add per Twitter config:
-        - `ACCESS_TOKEN` (work bot’s oauth_token).
-        - `ACCESS_TOKEN_SECRET` (work bot’s oauth_token_secret).
-        - `CONSUMER_KEY` (dev app’s API Key).
-        - `CONSUMER_SECRET` (dev app’s API Secret Key).
+    - Add `NODE_ENV` as `production`.
+    - Add `WORK` as the work’s name.
+    - Add per Twitter config:
+      - `ACCESS_TOKEN` (work bot’s oauth_token).
+      - `ACCESS_TOKEN_SECRET` (work bot’s oauth_token_secret).
+      - `CONSUMER_KEY` (dev app’s API Key).
+      - `CONSUMER_SECRET` (dev app’s API Secret Key).
 - Create an AWS CloudWatch event rule.
   - Schedule a fixed rate to the desired minutes.
   - Add the corresponding lambda as its target.
@@ -67,13 +76,23 @@ Written works in tweets line by line.
 - View Log groups in AWS CloudWatch. Reduce retention settings from the “never expire” default.
 - Optional: Add Log group as a trigger to `logEmailer.js` Lambda function, filter pattern `ERROR`, for automated error emails (filter name is email subject).
 - Command-line scripts:
-    - Break paragraphs into sentences (overwrites the work’s “lines” file): `WORK=<work> npm run break-paragraphs`
-    - Check lines meet Twitter limits: `WORK=<work> npm run check-lines`
-    - Break lines to meet Twitter limits (overwrites the work’s “lines” file): `WORK=<work> npm run break-long-lines "<breaker>"`
-    - Confirm Twitter credentials: `WORK=<work> npm run confirm-twitter`
-    - Get index from AWS storage: `WORK=<work> npm run get-index`
-    - Set index in AWS storage (use `--` before index if `-1`): `WORK=<work> npm run set-index <index>`
-    - Zip code for deploy: `npm run zip`
-    - Deploy the zip (increase timeout in script if needed): `WORK=<work> npm run deploy`
-    - Execute handler manually: `WORK=<work> npm run execute`
-    - Tweet a special announcement without iterating index: `WORK=<work> npm run psa <announcement>`
+  - Break paragraphs into sentences (overwrites the work’s “lines” file):
+    - `WORK=<work> npm run break-paragraphs`
+  - Check lines meet Twitter limits:
+    - `WORK=<work> npm run check-lines`
+  - Break lines to meet Twitter limits (overwrites the work’s “lines” file):
+    - `WORK=<work> npm run break-long-lines "<breaker>"`
+  - Confirm Twitter credentials:
+    - `WORK=<work> npm run confirm-twitter`
+  - Get index from AWS storage:
+    - `WORK=<work> npm run get-index`
+  - Set index in AWS storage (use `--` before index if `-1`):
+    - `WORK=<work> npm run set-index <index>`
+  - Zip code for deploy:
+    - `npm run zip`
+  - Deploy the zip (increase timeout in script if needed):
+    - `WORK=<work> npm run deploy`
+  - Execute handler manually:
+    - `WORK=<work> npm run execute`
+  - Tweet a special announcement without iterating index:
+    - `WORK=<work> npm run psa <announcement>`
