@@ -642,7 +642,7 @@ module.exports = ['BACK TO THE FUTURE','Written by ROBERT ZEMECKIS & BOB GALE'
 'I’m gonna leave.',
 'You want it. You know you want it. You know you want me to give it to you.',
 'Shut your filthy mouth. I’m not that kind of girl!',
-'Well, maybe you are and you just don’t know it yet.',
+'Well, maybe you are, and you just don’t know it yet.',
 'Get your meat hooks off of me.',
 'You heard her. She said, get your meat hooks… off… uh, please.',
 'So what’s it to you, butthead?',
